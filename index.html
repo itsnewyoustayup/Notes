@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дисциплина 17: Идеальный День</title>
+    
+    <!-- Подключаем Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter для премиального стиля -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome для стильных современных иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-emerald': '0 0 15px rgba(16, 185, 129, 0.3)',
+                        'neon-indigo': '0 0 20px rgba(99, 102, 241, 0.25)',
+                        'neon-amber': '0 0 15px rgba(245, 158, 11, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Стилизация скроллбара для премиального вида */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+        
+        /* Анимация левитации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.03); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+
+    <script>
+        // Генерируем красивую иконку PWA в виде SVG (Щит Дисциплины)
+        const svgIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+            <rect width="512" height="512" rx="100" fill="#020617"/>
+            <path d="M256 48l160 80v160c0 100-70 170-160 192-90-22-160-92-160-192V128l160-80z" fill="#6366f1"/>
+            <path d="M256 48v394c70-20 128-82 128-166V138l-128-56z" fill="#4f46e5"/>
+            <path d="M256 160l32 64 64 8-48 44 16 64-64-36-64 36 16-64-48-44 64-8z" fill="#fbbf24"/>
+        </svg>`;
+        
+        const blobIcon = new Blob([svgIcon], {type: 'image/svg+xml'});
+        const iconUrl = URL.createObjectURL(blobIcon);
+
+        // Добавляем иконки на страницу
+        const linkIcon = document.createElement('link');
+        linkIcon.rel = 'icon';
+        linkIcon.href = iconUrl;
+        document.head.appendChild(linkIcon);
+
+        const appleLinkIcon = document.createElement('link');
+        appleLinkIcon.rel = 'apple-touch-icon';
+        appleLinkIcon.href = iconUrl;
+        document.head.appendChild(appleLinkIcon);
+
+        // Создаем Manifest для инсталляции (Web APK)
+        const manifest = {
+            name: "Дисциплина 17",
+            short_name: "Дисциплина 17",
+            start_url: window.location.href,
+            display: "standalone",
+            background_color: "#020617",
+            theme_color: "#6366f1",
+            icons: [
+                {
+                    src: iconUrl,
+                    sizes: "512x512",
+                    type: "image/svg+xml",
+                    purpose: "any maskable"
+                }
+            ]
+        };
+
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = manifestUrl;
+        document.head.appendChild(manifestLink);
+
+        const swContent = `
+            const CACHE_NAME = 'discipline-17-cache-v1';
+            self.addEventListener('install', (e) => {
+                self.skipWaiting();
+            });
+            self.addEventListener('activate', (e) => {
+                e.waitUntil(clients.claim());
+            });
+            self.addEventListener('fetch', (e) => {
+                e.respondWith(
+                    fetch(e.request).catch(() => caches.match(e.request))
+                );
+            });
+        `;
+        const swBlob = new Blob([swContent], {type: 'application/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(swUrl)
+                .then(() => console.log('PWA Service Worker зарегистрирован успешно.'))
+                .catch(err => console.log('Ошибка SW:', err));
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden selection:bg-indigo-500 selection:text-white pb-12">
+
+    <!-- Фоны со свечением -->
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-900/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-emerald-950/20 blur-[150px] pointer-events-none"></div>
+
+    <!-- Основной контейнер -->
+    <div class="max-w-6xl mx-auto px-4 py-6 md:py-10 relative z-10">
+
+        <!-- Header / Верхняя панель -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl p-6 rounded-3xl shadow-2xl">
+            <div class="text-center md:text-left">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1.5">
+                    <span class="px-3 py-1 text-xs font-semibold bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20">Возраст: 16-17 лет</span>
+                    <span class="px-3 py-1 text-xs font-semibold bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">Режим: Воин</span>
+                    <!-- Кнопка установки PWA -->
+                    <button id="pwa-install-btn" class="hidden px-3 py-1 text-xs font-extrabold bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 rounded-full border border-amber-400 animate-pulse transition-all hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-download"></i> УСТАНОВИТЬ НА ЭКРАН
+                    </button>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center md:justify-start gap-3">
+                    Дисциплина 17 <span class="text-indigo-500 text-2xl"><i class="fa-solid fa-shield-halved"></i></span>
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Идеальный трек дня. Все важные дела до обеда, вечер — полностью свободен.</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <!-- Огненная серия дней -->
+                <div class="bg-slate-950/80 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-inner">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-neon-amber animate-pulse">
+                        <i class="fa-solid fa-fire text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Серия дней</div>
+                        <div class="text-lg font-black text-slate-100" id="streak-counter">0 дней</div>
+                    </div>
+                </div>
+
+                <!-- Системное время и индикатор сброса -->
+                <div class="text-right bg-slate-950/80 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Сброс в 02:30</div>
+                        <div class="text-sm font-bold text-indigo-300" id="live-time">00:00:00</div>
+                    </div>
+                </div>
+
+                <!-- Кнопка ручного сброса -->
+                <button onclick="confirmReset()" title="Сбросить прогресс вручную" class="w-11 h-11 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 flex items-center justify-center transition-all duration-300 active:scale-95">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Секция прогресса -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+            <div class="lg:col-span-4 bg-gradient-to-br from-indigo-950/40 to-slate-900/40 border border-indigo-500/10 p-6 rounded-3xl flex flex-col justify-between items-center text-center shadow-lg backdrop-blur-md">
+                <div class="w-full">
+                    <h3 class="text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">Индекс дисциплины</h3>
+                    <p class="text-slate-400 text-xs px-4">Растет при выполнении каждой задачи. Держи уровень выше 80%!</p>
+                </div>
+                
+                <!-- Круговой Прогресс Бар -->
+                <div class="relative my-6 flex items-center justify-center animate-float">
+                    <svg class="w-36 h-36 transform -rotate-90">
+                        <circle cx="72" cy="72" r="62" stroke="currentColor" class="text-slate-800/60" stroke-width="10" fill="transparent" />
+                        <circle cx="72" cy="72" r="62" stroke="currentColor" class="text-indigo-500 transition-all duration-1000 ease-out" stroke-width="10" fill="transparent" stroke-dasharray="389.5" stroke-dashoffset="389.5" id="progress-circle" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute flex flex-col items-center">
+                        <span class="text-3xl font-black text-white" id="progress-percentage">0%</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">уровень</span>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <div class="px-4 py-2 bg-slate-950/60 border border-slate-800/60 rounded-xl" id="rank-badge-container">
+                        <span class="text-xs font-bold text-indigo-300" id="discipline-rank">Загрузка статуса...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Блок динамических советов -->
+            <div class="lg:col-span-8 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl flex flex-col justify-between backdrop-blur-md shadow-lg">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <h3 class="text-slate-300 font-bold text-sm uppercase tracking-wider">Медицинский & Биохакинг хаб</h3>
+                        </div>
+                        <button onclick="shuffleActiveAdvice()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 hover:border-indigo-500/40 transition-all">
+                            <i class="fa-solid fa-shuffle"></i> Сменить совет
+                        </button>
+                    </div>
+
+                    <!-- Выбранная задача для советов -->
+                    <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-2xl mb-4">
+                        <div class="text-xs text-slate-500 font-semibold mb-1 uppercase tracking-wider">Для задачи:</div>
+                        <h4 class="text-md font-bold text-white flex items-center gap-2" id="advice-task-title">
+                            <span class="text-indigo-400" id="advice-task-icon"><i class="fa-solid fa-compass"></i></span>
+                            Выберите задачу из списка слева
+                        </h4>
+                    </div>
+
+                    <!-- Контент совета -->
+                    <div class="min-h-[100px] flex flex-col justify-center transition-all duration-300" id="advice-container">
+                        <p class="text-slate-300 italic text-sm md:text-base leading-relaxed" id="advice-text">
+                            Нажмите на любую задачу в расписании, чтобы мгновенно получить глубокий медицинский совет для твоего возраста, биохакинг-совет или наставление по дисциплине.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Важнейший закрепленный совет -->
+                <div class="mt-4 border-t border-slate-800/60 pt-4" id="important-advice-block">
+                    <div class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex gap-3 shadow-neon-amber">
+                        <div class="text-amber-500 text-lg mt-0.5"><i class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <span class="text-amber-400 text-xs font-extrabold uppercase tracking-widest block mb-1">🔥 ВАЖНЕЙШИЙ МЕДИЦИНСКИЙ СОВЕТ</span>
+                            <p class="text-amber-100 text-xs md:text-sm leading-relaxed" id="critical-advice-text">
+                                В возрасте 16-17 лет пик выработки гормона роста и тестостерона приходится на период сна с 22:00 до 02:00. Ложись спать вовремя, чтобы выжать максимум из генетического потенциала роста!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основная рабочая сетка -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Левая колонка: Список хронологических задач -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="flex items-center justify-between mb-2 px-1">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-indigo-400"></i>
+                        <h2 class="text-lg font-bold text-white">Твой хронологический трек</h2>
+                    </div>
+                    <span class="text-xs text-slate-400" id="completed-count">Выполнено: 0 / 9</span>
+                </div>
+
+                <!-- Контейнер задач -->
+                <div id="tasks-timeline-container" class="space-y-3">
+                    <!-- Задачи будут сгенерированы динамически через JavaScript -->
+                </div>
+            </div>
+
+            <!-- Правая колонка: Привычки, Блокнот и Статистика -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Блокнот рефлексии дня -->
+                <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-3xl backdrop-blur-md shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-slate-200 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-brain text-purple-400"></i> Блокнот рефлексии
+                            </h3>
+                            <span class="text-[10px] px-2 py-0.5 bg-slate-850 border border-slate-800 rounded text-slate-400">Автосохранение</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">
+                            Записывай сюда свои победы, мысли, провалы в дисциплине или планы на завтра. Вечерний анализ — лучший способ укрепить волю.
+                        </p>
+                        <textarea id="reflection-textarea" oninput="saveReflection()" placeholder="Сегодня у меня получилось сфокусироваться на работе... Намаз дал сил... Моя осанка становится лучше..." class="w-full h-36 bg-slate-950/80 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-2xl p-4 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all duration-300 resize-none"></textarea>
+                    </div>
+                    <div class="flex justify-between items-center mt-3 text-xs text-slate-500">
+                        <span id="char-count">0 символов</span>
+                        <span id="save-status" class="text-emerald-400 opacity-0 transition-opacity duration-300"><i class="fa-solid fa-circle-check"></i> Сохранено в память телефона</span>
+                    </div>
+                </div>
+
+                <!-- Быстрые мотивационные стикеры -->
+                <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-3xl backdrop-blur-md shadow-lg">
+                    <h3 class="text-slate-200 font-bold text-sm uppercase tracking-wider flex items-center gap-2 mb-3">
+                        <i class="fa-solid fa-heart-pulse text-rose-500"></i> Фокус Здоровья в 17 лет
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl">
+                            <span class="text-indigo-400 font-bold block mb-0.5">Скелет</span>
+                            Кости активно растут до 21 года. Осанка сейчас определяет здоровье спины.
+                        </div>
+                        <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl">
+                            <span class="text-emerald-400 font-bold block mb-0.5">Dopamine</span>
+                            Утренний тяжелый труд без телефона строит железный фокус.
+                        </div>
+                        <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl">
+                            <span class="text-amber-400 font-bold block mb-0.5">Криостимуляция</span>
+                            Лёд снимает спазм мимических мышц лица, тонизируя сосуды.
+                        </div>
+                        <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl">
+                            <span class="text-purple-400 font-bold block mb-0.5">Умный вечер</span>
+                            Ложись в 22:30, чтобы проснуться на Фаджр бодрым.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кастомное модальное окно уведомлений -->
+                <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Подвал -->
+        <footer class="mt-12 text-center text-xs text-slate-600 border-t border-slate-900 pt-6">
+            <p>© Дисциплина 17 • Ин Ша Аллах, всё получится по воле Аллаха • Создано для силы, здоровья и характера</p>
+        </footer>
+
+    </div>
+
+    <!-- Модальное окно редактирования задачи (Упражнения/Время) -->
+    <div id="edit-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-md shadow-2xl relative">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-indigo-400"></i> Редактировать задачу
+            </h3>
+            
+            <input type="hidden" id="edit-task-id">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Название задачи / упражнения</label>
+                    <input type="text" id="edit-task-name" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Время / Интервал</label>
+                        <input type="text" id="edit-task-time" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Категория</label>
+                        <input type="text" id="edit-task-category" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="closeEditModal()" class="px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition-all">Отмена</button>
+                <button onclick="saveTaskEdits()" class="px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-neon-indigo transition-all">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // База данных 10 советов для каждой задачи
+        const adviceDatabase = {
+            1: [ // Фаджр намаз
+                { text: "Медицина: Пробуждение на рассвете запускает ранний синтез кортизола, помогая организму адаптироваться к дню без стресса.", important: true },
+                { text: "Здоровье: Свежий утренний воздух на рассвете максимально насыщен отрицательными ионами, полезными для легких.", important: false },
+                { text: "Дисциплина: Ранний подъем закладывает чувство тотального контроля над днем с первой минуты пробуждения.", important: false },
+                { text: "Биохакинг: Молитвенные наклоны мягко растягивают позвоночник и активируют кровообращение спины.", important: false },
+                { text: "Мозг: На рассвете мозг работает на альфа-волнах, это лучшее время для самоанализа и духовного умиротворения.", important: false },
+                { text: "Медицина: Постоянство в утреннем подъеме полностью избавляет от подростковой бессонницы.", important: true },
+                { text: "Дисциплина: Если ты смог победить лень на рассвете и встать с постели — днем тебя ничто не сломает.", important: false },
+                { text: "Мозг: Утреннее бодрствование без цифрового шума защищает твою дофаминовую систему от перегрузки.", important: false },
+                { text: "Здоровье: Омовение прохладной водой сужает периферические сосуды, направляя кровоток к внутренним органам.", important: false },
+                { text: "Ин Ша Аллах: Это великое благословение во времени и делах. Все успешные люди начинают день до восхода солнца.", important: false }
+            ],
+            2: [ // Ледяное умывание (Лёд лицо)
+                { text: "Медицина: Локальная криотерапия сужает расширенные за ночь сосуды, мгновенно выгоняя застоявшуюся лимфу и убирая отечность.", important: true },
+                { text: "Внимание: Не задерживай лед на одной зоне дольше 3 секунд! Води плавно по массажным линиям, чтобы избежать переохлаждения нерва.", important: true },
+                { text: "Биохакинг: Холодный шок стимулирует выброс норадреналина — ты просыпаешься быстрее, чем от любой чашки кофе.", important: false },
+                { text: "Кожа: Криопроцедуры сужают поры и снижают избыточную жирность кожи, что критически важно в возрасте 16-17 лет.", important: false },
+                { text: "Здоровье: Холод активирует блуждающий нерв, помогая быстро войти в состояние спокойного бодрствования.", important: false },
+                { text: "Совет: Используй лед из отвара ромашки или зеленого чая, чтобы убрать подростковые воспаления и акне.", important: false },
+                { text: "Кожа: Лед стимулирует выработку коллагена, делая кожу упругой и придавая лицу здоровый мужественный тон.", important: false },
+                { text: "Здоровье: Холодное умывание повышает устойчивость организма к простудным заболеваниям, закаляя сосуды.", important: false },
+                { text: "Эстетика: Процедура помогает очертить линию челюсти, убирая подкожную отечность в области подбородка.", important: false },
+                { text: "Рекомендация: Делай процедуру каждое утро сразу после намаза, чтобы полностью запустить микроциркуляцию мозга.", important: false }
+            ],
+            3: [ // Разминка
+                { text: "Медицина: В 17 лет идет финальный этап роста трубчатых костей. Мягкая суставная разминка предотвращает растяжения и боли роста.", important: true },
+                { text: "Анатомия: Лимфатическая система запускается исключительно через мышечные сокращения. Разминка — единственный способ разогнать застой лимфы.", important: true },
+                { text: "Дыхание: Выполните 10 глубоких вдохов. Это расправит легкие и обогатит кровь кислородом для продуктивной работы.", important: false },
+                { text: "Сердце: Плавное повышение пульса с утра готовит миокард к дневным нагругам без перегрузки.", important: false },
+                { text: "Гормоны: Утренние упражнения стимулируют легкий выброс тестостерона, повышая мужскую энергию и фокус.", important: false },
+                { text: "Гибкость: Разминка шейного отдела убирает спазмы сосудов, улучшая приток артериальной крови к коре головного мозга.", important: false },
+                { text: "Правило: Разминайся сверху вниз (шея, плечи, локти, кисти, спина, таз, колени, стопы). Это физиологический стандарт.", important: false },
+                { text: "Дисциплина: Зарядка занимает всего 10 минут, но повышает твою дневную физическую выносливость на 40%.", important: false },
+                { text: "Здоровье: Легкая растяжка с утра улучшает эластичность связок, снижая риск травм при любых нагрузках.", important: false },
+                { text: "Мозг: Двигательная активность активирует моторные зоны коры полушарий, снимая остаточную утреннюю сонливость.", important: false }
+            ],
+            4: [ // Упражнение для осанки (Сессия 1)
+                { text: "Медицина: В 16-17 лет зоны роста позвонков еще открыты. Формирование правильной осанки СЕЙЧАС определяет здоровье спины на всю жизнь.", important: true },
+                { text: "Анатомия: Слабость ромбовидных мышц спины приводит к сутулости. Упражнения у стены или 'Кобра' укрепляют мышечный корсет.", important: true },
+                { text: "Гормоны: Доказано, что прямая спина снижает выработку кортизола (гормона стресса) на 25% и повышает тестостерон.", important: false },
+                { text: "Легкие: Сгорбленная поза сжимает ребра, уменьшая объем вдоха на 30%. Из-за этого мозг находится в постоянной гипоксии.", important: false },
+                { text: "Зрение: Правильный изгиб шейного отдела напрямую влияет на глазное давление и остроту зрения при чтении и работе.", important: false },
+                { text: "Уверенность: Ровная спина и развернутые плечи подсознательно считываются окружающими как признак лидера.", important: false },
+                { text: "Медицина: Сколиоз и кифоз легче всего скорректировать именно в подростковом возрасте, пока кости пластичны.", important: false },
+                { text: "Органы: Ровный позвоночник обеспечивает правильное анатомическое положение желудка и кишечника.", important: false },
+                { text: "Совет: Прижмись затылком, лопатками, ягодицами и пятками к стене на 3 минуты. Твой мозг запомнит ровное положение спины.", important: false },
+                { text: "Эстетика: Ровная осанка визуально увеличивает твой рост на 2-4 сантиметра и делает грудную клетку шире.", important: false }
+            ],
+            5: [ // Еда
+                { text: "Медицина: Плотный белково-жировой завтрак (яйца, мясо, орехи) стабилизирует сахар в крови, давая энергию на 4-5 часов без сонливости.", important: true },
+                { text: "Внимание: Исключи сладкие каши, хлопья и выпечку на завтрак. Они вызывают резкий скачок инсулина, который приведет к вялости через час.", important: true },
+                { text: "Гормоны: Полезные жиры (яйца, сливочное масло, сыр) являются основой для синтеза всех стероидных гормонов у юноши.", important: false },
+                { text: "Пищеварение: Выпивай стакан теплой чистой воды за 15 минут до еды, чтобы разбудить желудок и запустить отток желчи.", important: false },
+                { text: "Строительство: Твое тело активно строит новые ткани. Белок на завтрак — это кирпичи для твоих мышц и костей.", important: false },
+                { text: "Мозг: Аминокислоты из белковой пищи необходимы для синтеза дофамина, который отвечает за мотивацию и учебу.", important: false },
+                { text: "Совет: Тщательно пережевывай каждый кусочек (не менее 20 раз). Это разгрузит желудок и улучшит усвояемость нутриентов.", important: false },
+                { text: "Здоровье: Избегай фастфуда и трансжиров — они вызывают воспалительные процессы в организме и портят кожу.", important: false },
+                { text: "Вода: Не запивай еду большим количеством воды, пей основную норму в перерывах между приемами пищи.", important: false },
+                { text: "Дисциплина: Относись к еде как к топливу для достижения целей, а не как к способу развлечения или борьбы со скукой.", important: false }
+            ],
+            6: [ // Работа: 3 часа
+                { text: "Медицина: Самый высокий уровень когнитивных способностей мозга наблюдается через 1.5 - 3 часа после пробуждения. Направь его на сложную работу.", important: true },
+                { text: "Дофаминовый биохакинг: Убери телефон в другую комнату! Даже просто лежащий на столе смартфон снижает концентрацию внимания на 15%.", important: true },
+                { text: "Метод: Используй систему блоков: 50 минут глубокой работы, 10 минут отдыха. Без переключения на соцсети.", important: false },
+                { text: "Нейропластичность: В 17 лет мозг формирует миелиновые оболочки нервных волокон. Твоя способность обучаться сейчас на историческом пике.", important: false },
+                { text: "Кислород: Перед началом работы обязательно проветри комнату. Свежий воздух снижает CO2 и предотвращает сонливость.", important: false },
+                { text: "Зрение: Используй правило '20-20-20': каждые 20 минут смотри на 20 метров вдаль в течение 20 секунд, чтобы расслабить глаза.", important: false },
+                { text: "Осанка: Отрегулируй высоту стула так, чтобы стопы ровно стояли на полу. Не закидывай ногу на ногу — это зажимает вены таза.", important: false },
+                { text: "Дисциплина: Начинай работу с самой трудной задачи дня. Сделав ее, ты почувствуешь прилив гордости и сил.", important: false },
+                { text: "Вода: Держи на столе стакан чистой воды. Обезвоживание всего на 2% снижает скорость мышления на 10%.", important: false },
+                { text: "Итог: Сфокусированные 3 часа утренней работы равны 8 часам хаотичной работы с отвлечениями на телефон.", important: false }
+            ],
+            7: [ // Упражнение для лица
+                { text: "Медицина: Симметричная нагрузка на жевательные мышцы лица улучшает кровообращение головы и формирует мужественный контур челюсти.", important: true },
+                { text: "Мьюинг: Держи язык полностью прижатым к нёбу на протяжении дня. Это физиологически расширяет челюсть и выдвигает подбородок вперед.", important: true },
+                { text: "Лимфодренаж: Легкий массаж лица пальцами разгоняет межклеточную жидкость, избавляя от утренних отеков на щеках.", important: false },
+                { text: "Здоровье: Расслабление мимических зажимов (особенно лба) избавляет от напряжения в височной зоне и предупреждает головную боль.", important: false },
+                { text: "Кожа: Гимнастика для лица ускоряет регенерацию клеток кожи, помогая быстрее залечивать следы от прыщей и акне.", important: false },
+                { text: "Анатомия: Осанка шеи напрямую связана с лицом! Сутулость тянет платизму вниз, укорачивая шею и создавая второй подбородок.", important: false },
+                { text: "Гигиена: Перед любым упражнением или массажем лица обязательно тщательно вымой руки с мылом, чтобы не разносить бактерии.", important: false },
+                { text: "Совет: Выполняй упражнения перед зеркалом, контролируя симметрию движений левой и правой стороны лица.", important: false },
+                { text: "Физиология: Жевание твердой пищи (овощи, фрукты, орехи) — лучшая естественная тренировка жевательного аппарата.", important: false },
+                { text: "Эстетика: Регулярный мьюинг и тонус лица делают черты лица более выразительными, собранными и мужественными.", important: false }
+            ],
+            8: [ // Упражнение для осанки (Сессия 2)
+                { text: "Медицина: Длительное сидение за работой перегружает поясничный отдел. Вторая сессия осанки снимает накопленное мышечное напряжение.", important: true },
+                { text: "Биомеханика: Растяжка грудных мышц раскрывает плечи назад, убирая типичную сутулость 'компьютерщика'.", important: true },
+                { text: "Кровоток: Разминка грудного отдела улучшает микроциркуляцию в области сердца и легких, обогащая ткани кислородом.", important: false },
+                { text: "Совет: Сделай упражнение 'замок' руками за спиной или повиси на турнике 1 минуту для декомпрессии позвоночника.", important: false },
+                { text: "Профилактика: Осанка предотвращает появление протрузий и грыж дисков, которые часто формируются в студенчестве.", important: false },
+                { text: "Нервы: Зажатая спина сдавливает нервные корешки, что приводит к онемению пальцев рук и быстрой утомляемости.", important: false },
+                { text: "Дисциплина: Относись к осанке как к своему внутреннему стержню. Ровная спина — это физическое проявление сильной воли.", important: false },
+                { text: "Рост: Растяжка позвоночника убирает компрессию межпозвоночных дисков, поддерживая твой максимальный рост.", important: false },
+                { text: "Ошибки: Избегай сильного прогиба в пояснице. Держи мышцы пресса в легком тонусе во время выполнения упражнения.", important: false },
+                { text: "Результат: 10 минут качественной разгрузки спины вернут тебе свежесть ума для финального блока работы.", important: false }
+            ],
+            9: [ // Работа: 2 часа
+                { text: "Медицина: Завершающий блок умственной нагрузки до обеда задействует остаточный суточный резерв внимания.", important: true },
+                { text: "Внимание: Твой мозг уже немного утомлен. Уберите все лишние вкладки в браузере и сфокусируйтесь только на ОДНОЙ главной задаче.", important: true },
+                { text: "Биохакинг: Каждые 30 минут вставайте со стула на 1 минуту, чтобы сделать пару приседаний и разогнать венозную кровь от ног.", important: false },
+                { text: "Мозг: Двухчасовой блок работы позволяет завершить все начатые утренние циклы и поставить твердую точку в делах.", important: false },
+                { text: "Дисциплина: Завершив этот блок, ты выполнил 5 часов чистой работы до обеда! Твой вечер будет абсолютно свободным без чувства вины.", important: false },
+                { text: "Зрение: Дай глазам отдохнуть — сделай несколько круговых движений глазными яблоками при закрытых веках.", important: false },
+                { text: "Рекомендация: Поставь тихий фоновый шум (например, шум дождя или бинауральные ритмы) для сохранения концентрации.", important: false },
+                { text: "Организация: Подготовь план работы на завтра прямо сейчас, чтобы утром не тратить время на размышления.", important: false },
+                { text: "Психология: Осознание того, что основная работа сделана в первой половине дня, снижает уровень тревожности к вечеру.", important: false },
+                { text: "Успех: Систематические 5 часов сфокусированного труда ежедневно сделают тебя экспертом в любой области за 1-2 года.", important: false }
+            ]
+        };
+
+        // Задачи в строгом хронологическом порядке для освобождения вечера
+        const chronologicalTasks = [
+            { id: 1, name: "Таң (Фаджр) намаз", desc: "Духовный фундамент дня. Пробуждение на рассвете.", time: "Рассвет", icon: "fa-solid fa-sun", done: false, category: "Духовность" },
+            { id: 2, name: "Криопроцедура: Лёд для лица", desc: "Умывание кубиком льда для удаления утренней отёчности.", time: "06:00", icon: "fa-solid fa-snowflake", done: false, category: "Здоровье" },
+            { id: 3, name: "Суставная разминка", desc: "Запуск лимфы, растяжка мышц, подготовка суставов к дню.", time: "06:15", icon: "fa-solid fa-person-walking", done: false, category: "Здоровье" },
+            { id: 4, name: "Упражнение для осанки (Сессия 1)", desc: "Выравнивание спины, раскрытие грудной клетки.", time: "06:30", icon: "fa-solid fa-child", done: false, category: "Осанка" },
+            { id: 5, name: "Полноценный завтрак (Еда)", desc: "Белки + полезные жиры для стабильного сахара и энергии.", time: "07:00", icon: "fa-solid fa-egg", done: false, category: "Питание" },
+            { id: 6, name: "Работа / Учеба: 3 часа (Блок 1)", desc: "Максимальный фокус без телефона. Решение сложных задач.", time: "08:00 - 11:00", icon: "fa-solid fa-laptop-code", done: false, category: "Работа" },
+            { id: 7, name: "Упражнение для лица (Мьюинг)", desc: "Тонус лицевых мышц, мьюинг для мужественной челюсти.", time: "11:15", icon: "fa-solid fa-face-smile", done: false, category: "Здоровье" },
+            { id: 8, name: "Упражнение для осанки (Сессия 2)", desc: "Разгрузка поясничного и грудного отдела после сидения.", time: "11:30", icon: "fa-solid fa-person-falling-burst", done: false, category: "Осанка" },
+            { id: 9, name: "Работа / Учеба: 2 часа (Блок 2)", desc: "Финальный интеллектуальный рывок. Закрытие дневных задач.", time: "12:00 - 14:00", icon: "fa-solid fa-brain", done: false, category: "Работа" }
+        ];
+
+        // Инициализация состояния приложения из localStorage или создание дефолтного
+        let state = JSON.parse(localStorage.getItem('discipline_17_state')) || {
+            tasks: JSON.parse(JSON.stringify(chronologicalTasks)), // Копируем дефолтные задачи
+            streak: 0,
+            lastResetDate: "",
+            reflection: ""
+        };
+
+        // Проверяем целостность и количество задач в сохраненном стейте
+        if (!state.tasks || state.tasks.length !== chronologicalTasks.length) {
+            state.tasks = JSON.parse(JSON.stringify(chronologicalTasks));
+            localStorage.setItem('discipline_17_state', JSON.stringify(state));
+        }
+
+        // Переменная для хранения ID текущей выбранной задачи для отображения советов
+        let activeTaskId = 1;
+
+        // Инициализируем аудиоконтекст для сочного звука успеха
+        let audioCtx = null;
+        function playSuccessSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                osc.type = 'sine';
+                
+                // Красивый двойной гармоничный сигнал успеха
+                osc.frequency.setValueAtTime(392.00, now); // G4
+                osc.frequency.setValueAtTime(523.25, now + 0.08); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.16); // E5
+                
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch(e) {
+                console.log("Audio Context не поддерживается или заблокирован браузером", e);
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-2xl border text-sm shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto`;
+            
+            let bgClass = 'bg-slate-900/90 border-slate-800 text-slate-100';
+            let icon = '<i class="fa-solid fa-info text-indigo-400"></i>';
+            
+            if (type === 'success') {
+                bgClass = 'bg-emerald-950/90 border-emerald-500/30 text-emerald-100 shadow-neon-emerald';
+                icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+            } else if (type === 'reset') {
+                bgClass = 'bg-indigo-950/90 border-indigo-500/30 text-indigo-100 shadow-neon-indigo';
+                icon = '<i class="fa-solid fa-rotate text-indigo-400"></i>';
+            } else if (type === 'alert') {
+                bgClass = 'bg-rose-950/90 border-rose-500/30 text-rose-100';
+                icon = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>';
+            }
+            
+            toast.className += ` ${bgClass}`;
+            toast.innerHTML = `${icon} <div class="flex-1 font-medium">${message}</div>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-2px]');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Проверка времени и авто-сброс задач в 02:30 ночи
+        function checkReset() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // Если время < 02:30 ночи, то мы всё ещё в цикле вчерашнего дня.
+            let logicalDay = new Date(now);
+            if (currentHour < 2 || (currentHour === 2 && currentMinute < 30)) {
+                logicalDay.setDate(logicalDay.getDate() - 1);
+            }
+            const logicalDayString = logicalDay.toDateString();
+            
+            // Если сохраненная дата сброса не совпадает с текущим логическим днем
+            if (state.lastResetDate !== logicalDayString) {
+                // Был ли завершен прошлый день на 100%?
+                const allCompleted = state.tasks.every(task => task.done);
+                
+                if (allCompleted) {
+                    state.streak += 1;
+                    showToast(`Mashallah! Ты выполнил все задачи на 100%! Серия дней продлена до ${state.streak}.`, 'success');
+                } else {
+                    state.streak = 0;
+                    showToast('Новый день начался. Серия сброшена, так как вчера были невыполненные задачи.', 'alert');
+                }
+                
+                // Сбрасываем задачи
+                state.tasks.forEach(task => task.done = false);
+                state.lastResetDate = logicalDayString;
+                
+                saveState();
+                renderUI();
+                updateAdvicePanel(activeTaskId);
+            }
+        }
+
+        // Запрос подтверждения ручного сброса
+        function confirmReset() {
+            const modalConfirm = confirm("Вы действительно хотите сбросить прогресс за сегодня? Серия дней будет прервана.");
+            if (modalConfirm) {
+                state.tasks.forEach(task => task.done = false);
+                state.streak = 0;
+                
+                const now = new Date();
+                let logicalDay = new Date(now);
+                if (now.getHours() < 2 || (now.getHours() === 2 && now.getMinutes() < 30)) {
+                    logicalDay.setDate(logicalDay.getDate() - 1);
+                }
+                state.lastResetDate = logicalDay.toDateString();
+                
+                saveState();
+                renderUI();
+                showToast("Весь прогресс успешно обнулен вручную", "reset");
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('discipline_17_state', JSON.stringify(state));
+        }
+
+        // Сохранение рефлексии
+        function saveReflection() {
+            const text = document.getElementById('reflection-textarea').value;
+            state.reflection = text;
+            saveState();
+            
+            document.getElementById('char-count').innerText = `${text.length} символов`;
+            
+            const status = document.getElementById('save-status');
+            status.classList.remove('opacity-0');
+            status.classList.add('opacity-100');
+            
+            clearTimeout(window.reflectionSaveTimeout);
+            window.reflectionSaveTimeout = setTimeout(() => {
+                status.classList.remove('opacity-100');
+                status.classList.add('opacity-0');
+            }, 1000);
+        }
+
+        // Переключение состояния выполнения задачи
+        function toggleTask(id) {
+            const task = state.tasks.find(t => t.id === id);
+            if (task) {
+                task.done = !task.done;
+                
+                if (task.done) {
+                    playSuccessSound();
+                    showToast(`Выполнено: ${task.name}!`, "success");
+                }
+                
+                saveState();
+                renderUI();
+                selectTaskForAdvice(id);
+            }
+        }
+
+        // Выбор задачи для отображения советов
+        function selectTaskForAdvice(id) {
+            activeTaskId = id;
+            updateAdvicePanel(id);
+            
+            // Подсветка активной задачи в UI
+            const cards = document.querySelectorAll('.task-card');
+            cards.forEach(card => {
+                if (card.getAttribute('data-id') == id) {
+                    card.classList.add('border-indigo-500/70', 'bg-slate-900/80');
+                    card.classList.remove('border-slate-800/80', 'bg-slate-900/30');
+                } else {
+                    card.classList.remove('border-indigo-500/70', 'bg-slate-900/80');
+                    card.classList.add('border-slate-800/80', 'bg-slate-900/30');
+                }
+            });
+        }
+
+        // Смена совета (шаффл) внутри выбранной задачи
+        function shuffleActiveAdvice() {
+            updateAdvicePanel(activeTaskId);
+            showToast("Совет обновлен", "info");
+        }
+
+        // Логика отображения советов
+        function updateAdvicePanel(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            document.getElementById('advice-task-title').innerHTML = `
+                <span class="text-indigo-400"><i class="${task.icon}"></i></span>
+                ${task.name}
+            `;
+            
+            const tips = adviceDatabase[taskId];
+            if (tips && tips.length > 0) {
+                // Находим главный выделенный совет
+                const criticalTip = tips.find(tip => tip.important);
+                if (criticalTip) {
+                    document.getElementById('critical-advice-text').innerText = criticalTip.text;
+                }
+                
+                // Выбираем случайный совет для основного отображения
+                const randomIndex = Math.floor(Math.random() * tips.length);
+                const chosenTip = tips[randomIndex];
+                
+                const adviceTextEl = document.getElementById('advice-text');
+                
+                adviceTextEl.classList.add('opacity-0');
+                setTimeout(() => {
+                    if (chosenTip.important) {
+                        adviceTextEl.innerHTML = `
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
+                                <i class="fa-solid fa-star"></i> Ключевой совет
+                            </span>
+                            <span class="block text-amber-200 font-medium leading-relaxed">${chosenTip.text}</span>
+                        `;
+                    } else {
+                        adviceTextEl.innerHTML = `<span class="text-slate-200 leading-relaxed block">${chosenTip.text}</span>`;
+                    }
+                    adviceTextEl.classList.remove('opacity-0');
+                }, 150);
+            }
+        }
+
+        // Функции модального окна редактирования задачи
+        function openEditModal(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('edit-task-id').value = task.id;
+            document.getElementById('edit-task-name').value = task.name;
+            document.getElementById('edit-task-time').value = task.time;
+            document.getElementById('edit-task-category').value = task.category || "";
+
+            const modal = document.getElementById('edit-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('edit-modal');
+            modal.classList.add('hidden');
+        }
+
+        function saveTaskEdits() {
+            const id = parseInt(document.getElementById('edit-task-id').value);
+            const name = document.getElementById('edit-task-name').value.trim();
+            const time = document.getElementById('edit-task-time').value.trim();
+            const category = document.getElementById('edit-task-category').value.trim();
+
+            if (!name || !time) {
+                showToast("Название и Время не могут быть пустыми!", "alert");
+                return;
+            }
+
+            const task = state.tasks.find(t => t.id === id);
+            if (task) {
+                task.name = name;
+                task.time = time;
+                task.category = category || "Осанка";
+                
+                saveState();
+                renderUI();
+                updateAdvicePanel(activeTaskId);
+                closeEditModal();
+                showToast("Задача успешно обновлена", "success");
+            }
+        }
+
+        function renderUI() {
+            const completedCount = state.tasks.filter(t => t.done).length;
+            const totalCount = state.tasks.length;
+            
+            document.getElementById('completed-count').innerText = `Выполнено: ${completedCount} / ${totalCount}`;
+            
+            const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+            
+            document.getElementById('progress-percentage').innerText = `${percentage}%`;
+            
+            const circle = document.getElementById('progress-circle');
+            const circumference = 2 * Math.PI * 62; // 389.5
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
+            // Настройка ранга
+            let rank = "Абсолютный хаос 💀";
+            let rankClass = "text-rose-400 bg-rose-500/10 border-rose-500/20";
+            
+            if (percentage >= 100) {
+                rank = "Режим Берсерка 🔥";
+                rankClass = "text-amber-400 bg-amber-500/10 border-amber-500/30 shadow-neon-amber";
+            } else if (percentage >= 80) {
+                rank = "Железная воля ⚔️";
+                rankClass = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-neon-emerald";
+            } else if (percentage >= 50) {
+                rank = "На пути к силе 📈";
+                rankClass = "text-indigo-400 bg-indigo-500/10 border-indigo-500/20";
+            } else if (percentage > 0) {
+                rank = "Борьба с ленью 🛡️";
+                rankClass = "text-slate-400 bg-slate-800/50 border-slate-700/60";
+            }
+            
+            const rankBadge = document.getElementById('rank-badge-container');
+            rankBadge.className = `px-4 py-2 rounded-xl border text-xs font-bold transition-all duration-500 ${rankClass}`;
+            document.getElementById('discipline-rank').innerText = rank;
+            
+            document.getElementById('streak-counter').innerText = `${state.streak} ${getDaysWord(state.streak)}`;
+            
+            // Рендер хронологических задач
+            const timelineContainer = document.getElementById('tasks-timeline-container');
+            timelineContainer.innerHTML = state.tasks.map(task => {
+                const isSelected = task.id === activeTaskId;
+                const borderClass = isSelected ? 'border-indigo-500/70 bg-slate-900/80 shadow-neon-indigo' : 'border-slate-800/80 bg-slate-900/30';
+                const doneClass = task.done ? 'bg-gradient-to-r from-emerald-950/40 to-slate-900/40 border-emerald-500/30 shadow-neon-emerald' : borderClass;
+                
+                return `
+                    <div data-id="${task.id}" onclick="selectTaskForAdvice(${task.id})" class="task-card p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.01] hover:border-slate-700 cursor-pointer flex items-center justify-between gap-4 ${doneClass}">
+                        <div class="flex items-center gap-3.5 flex-1 min-w-0">
+                            <!-- Левая часть: Время и категория -->
+                            <div class="flex flex-col items-center justify-center min-w-[75px] py-1 px-2.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                                <span class="text-[10px] text-slate-400 font-extrabold tracking-wide uppercase text-center">${task.time}</span>
+                                <span class="text-[9px] text-indigo-400 mt-0.5 font-bold uppercase tracking-wider">${task.category}</span>
+                            </div>
+                            
+                            <!-- Иконка задачи -->
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm shrink-0 ${task.done ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-950 text-slate-400'}">
+                                <i class="${task.icon}"></i>
+                            </div>
+                            
+                            <div class="truncate">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-sm md:text-base font-bold text-white tracking-wide truncate ${task.done ? 'line-through text-slate-400/80' : ''}">${task.name}</h4>
+                                    
+                                    <!-- Кнопка редактирования задачи -->
+                                    <button onclick="event.stopPropagation(); openEditModal(${task.id})" class="text-slate-500 hover:text-indigo-400 p-1 rounded-md hover:bg-slate-800/50 transition-all" title="Редактировать название и время">
+                                        <i class="fa-solid fa-pen text-[10px]"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-slate-500 truncate ${task.done ? 'text-slate-600' : ''}">${task.desc}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Чекбокс действия -->
+                        <div onclick="event.stopPropagation()" class="flex items-center justify-center ml-2">
+                            <label class="relative flex items-center justify-center p-3 rounded-full cursor-pointer">
+                                <input type="checkbox" onchange="toggleTask(${task.id})" ${task.done ? 'checked' : ''} class="peer relative appearance-none w-6 h-6 rounded-lg border-2 border-slate-700 checked:border-emerald-500 bg-slate-950 hover:border-indigo-500 cursor-pointer transition-all duration-300 focus:outline-none" />
+                                <span class="absolute text-emerald-400 opacity-0 peer-checked:opacity-100 transition-opacity duration-300 pointer-events-none text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Помощник склонения
+        function getDaysWord(num) {
+            const remainder10 = num % 10;
+            const remainder100 = num % 100;
+            if (remainder100 >= 11 && remainder100 <= 19) return 'дней';
+            if (remainder10 === 1) return 'день';
+            if (remainder10 >= 2 && remainder10 <= 4) return 'дня';
+            return 'дней';
+        }
+
+        // Запуск системного времени и проверки сброса
+        function startTimeTracking() {
+            setInterval(() => {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                document.getElementById('live-time').innerText = `${hours}:${minutes}:${seconds}`;
+                
+                if (now.getSeconds() === 0) {
+                    checkReset();
+                }
+            }, 1000);
+        }
+
+        // Логика кнопки установки PWA (Web APK)
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Предотвращаем автоматический показ стандартного окна
+            e.preventDefault();
+            deferredPrompt = e;
+            // Показываем нашу кнопку
+            installBtn.classList.remove('hidden');
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            // Показываем диалог установки
+            deferredPrompt.prompt();
+            // Ждем ответа от пользователя
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Результат установки: ${outcome}`);
+            deferredPrompt = null;
+            installBtn.classList.add('hidden');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBtn.classList.add('hidden');
+            showToast("Приложение успешно установлено на ваш экран!", "success");
+        });
+
+        // Инициализация
+        window.onload = function() {
+            document.getElementById('reflection-textarea').value = state.reflection || "";
+            document.getElementById('char-count').innerText = `${(state.reflection || "").length} символов`;
+            
+            startTimeTracking();
+            checkReset();
+            renderUI();
+            selectTaskForAdvice(1);
+        }
+    </script>
+</body>
+</html>
