@@ -2,7 +2,7 @@
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Дисциплина 17: Идеальный День</title>
     
     <!-- Подключаем Tailwind CSS -->
@@ -108,7 +108,7 @@
         document.head.appendChild(manifestLink);
 
         const swContent = `
-            const CACHE_NAME = 'discipline-17-cache-v1';
+            const CACHE_NAME = 'discipline-17-cache-v2';
             self.addEventListener('install', (e) => {
                 self.skipWaiting();
             });
@@ -142,7 +142,7 @@
 
         <!-- Header / Верхняя панель -->
         <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl p-6 rounded-3xl shadow-2xl">
-            <div class="text-center md:text-left">
+            <div class="text-center md:text-left w-full md:w-auto">
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1.5">
                     <span class="px-3 py-1 text-xs font-semibold bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20">Возраст: 16-17 лет</span>
                     <span class="px-3 py-1 text-xs font-semibold bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">Режим: Воин</span>
@@ -157,7 +157,18 @@
                 <p class="text-slate-400 text-sm mt-1">Идеальный трек дня. Все важные дела до обеда, вечер — полностью свободен.</p>
             </div>
             
-            <div class="flex flex-wrap items-center justify-center gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-4 w-full md:w-auto">
+                <!-- Селектор времени пробуждения -->
+                <div class="bg-slate-950/80 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-inner">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-neon-indigo">
+                        <i class="fa-solid fa-bed text-md"></i>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Пробуждение</div>
+                        <input type="time" id="wake-up-time" onchange="updateWakeUpTime(this.value)" class="bg-transparent border-none text-md font-black text-slate-100 focus:outline-none cursor-pointer w-[65px]" style="color-scheme: dark;">
+                    </div>
+                </div>
+
                 <!-- Огненная серия дней -->
                 <div class="bg-slate-950/80 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-inner">
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-neon-amber animate-pulse">
@@ -267,12 +278,17 @@
             
             <!-- Левая колонка: Список хронологических задач -->
             <div class="lg:col-span-7 space-y-4">
-                <div class="flex items-center justify-between mb-2 px-1">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 px-1">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-indigo-400"></i>
                         <h2 class="text-lg font-bold text-white">Твой хронологический трек</h2>
                     </div>
-                    <span class="text-xs text-slate-400" id="completed-count">Выполнено: 0 / 9</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-slate-400">
+                            Все задачи синхронны пробуждению
+                        </span>
+                        <span class="text-xs text-slate-400 font-bold" id="completed-count">Выполнено: 0 / 9</span>
+                    </div>
                 </div>
 
                 <!-- Контейнер задач -->
@@ -360,13 +376,18 @@
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Время / Интервал</label>
-                        <input type="text" id="edit-task-time" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                        <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Начало / Время (ЧЧ:ММ)</label>
+                        <input type="text" id="edit-task-time" placeholder="Например: 11:30" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Категория</label>
                         <input type="text" id="edit-task-category" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
                     </div>
+                </div>
+                <div>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                        Совет: Изменяя время конкретной задачи вручную, система автоматически пересчитает её внутреннее смещение относительно времени пробуждения.
+                    </p>
                 </div>
             </div>
             
@@ -466,7 +487,7 @@
             ],
             8: [ // Упражнение для осанки (Сессия 2)
                 { text: "Медицина: Длительное сидение за работой перегружает поясничный отдел. Вторая сессия осанки снимает накопленное мышечное напряжение.", important: true },
-                { text: "Биомеханика: Растяжка грудных мышц раскрывает плечи назад, убирая типичную сутулость 'компьютерщика'.", important: true },
+                { text: "Биохакинг: Растяжка грудных мышц раскрывает плечи назад, убирая типичную сутулость 'компьютерщика'.", important: true },
                 { text: "Кровоток: Разминка грудного отдела улучшает микроциркуляцию в области сердца и легких, обогащая ткани кислородом.", important: false },
                 { text: "Совет: Сделай упражнение 'замок' руками за спиной или повиси на турнике 1 минуту для декомпрессии позвоночника.", important: false },
                 { text: "Профилактика: Осанка предотвращает появление протрузий и грыж дисков, которые часто формируются в студенчестве.", important: false },
@@ -490,38 +511,53 @@
             ]
         };
 
-        // Задачи в строгом хронологическом порядке для освобождения вечера
+        // Задачи в строгом хронологическом порядке с динамическим расчетом смещений (в минутах)
         const chronologicalTasks = [
-            { id: 1, name: "Таң (Фаджр) намаз", desc: "Духовный фундамент дня. Пробуждение на рассвете.", time: "Рассвет", icon: "fa-solid fa-sun", done: false, category: "Духовность" },
-            { id: 2, name: "Криопроцедура: Лёд для лица", desc: "Умывание кубиком льда для удаления утренней отёчности.", time: "06:00", icon: "fa-solid fa-snowflake", done: false, category: "Здоровье" },
-            { id: 3, name: "Суставная разминка", desc: "Запуск лимфы, растяжка мышц, подготовка суставов к дню.", time: "06:15", icon: "fa-solid fa-person-walking", done: false, category: "Здоровье" },
-            { id: 4, name: "Упражнение для осанки (Сессия 1)", desc: "Выравнивание спины, раскрытие грудной клетки.", time: "06:30", icon: "fa-solid fa-child", done: false, category: "Осанка" },
-            { id: 5, name: "Полноценный завтрак (Еда)", desc: "Белки + полезные жиры для стабильного сахара и энергии.", time: "07:00", icon: "fa-solid fa-egg", done: false, category: "Питание" },
-            { id: 6, name: "Работа / Учеба: 3 часа (Блок 1)", desc: "Максимальный фокус без телефона. Решение сложных задач.", time: "08:00 - 11:00", icon: "fa-solid fa-laptop-code", done: false, category: "Работа" },
-            { id: 7, name: "Упражнение для лица (Мьюинг)", desc: "Тонус лицевых мышц, мьюинг для мужественной челюсти.", time: "11:15", icon: "fa-solid fa-face-smile", done: false, category: "Здоровье" },
-            { id: 8, name: "Упражнение для осанки (Сессия 2)", desc: "Разгрузка поясничного и грудного отдела после сидения.", time: "11:30", icon: "fa-solid fa-person-falling-burst", done: false, category: "Осанка" },
-            { id: 9, name: "Работа / Учеба: 2 часа (Блок 2)", desc: "Финальный интеллектуальный рывок. Закрытие дневных задач.", time: "12:00 - 14:00", icon: "fa-solid fa-brain", done: false, category: "Работа" }
+            { id: 1, name: "Таң (Фаджр) намаз", desc: "Духовный фундамент дня. Пробуждение на рассвете.", offset: 0, duration: 0, icon: "fa-solid fa-sun", done: false, category: "Духовность" },
+            { id: 2, name: "Криопроцедура: Лёд для лица", desc: "Умывание кубиком льда для удаления утренней отёчности.", offset: 15, duration: 0, icon: "fa-solid fa-snowflake", done: false, category: "Здоровье" },
+            { id: 3, name: "Суставная разминка", desc: "Запуск лимфы, растяжка мышц, подготовка суставов к дню.", offset: 30, duration: 0, icon: "fa-solid fa-person-walking", done: false, category: "Здоровье" },
+            { id: 4, name: "Упражнение для осанки (Сессия 1)", desc: "Выравнивание спины, раскрытие грудной клетки.", offset: 45, duration: 0, icon: "fa-solid fa-child", done: false, category: "Осанка" },
+            { id: 5, name: "Полноценный завтрак (Еда)", desc: "Белки + полезные жиры для стабильного сахара и энергии.", offset: 75, duration: 0, icon: "fa-solid fa-egg", done: false, category: "Питание" },
+            { id: 6, name: "Работа / Учеба: 3 часа (Блок 1)", desc: "Максимальный фокус без телефона. Решение сложных задач.", offset: 135, duration: 180, icon: "fa-solid fa-laptop-code", done: false, category: "Работа" },
+            { id: 7, name: "Упражнение для лица (Мьюинг)", desc: "Тонус лицевых мышц, мьюинг для мужественной челюсти.", offset: 330, duration: 0, icon: "fa-solid fa-face-smile", done: false, category: "Здоровье" },
+            { id: 8, name: "Упражнение для осанки (Сессия 2)", desc: "Разгрузка поясничного и грудного отдела после сидения.", offset: 345, duration: 0, icon: "fa-solid fa-person-falling-burst", done: false, category: "Осанка" },
+            { id: 9, name: "Работа / Учеба: 2 часа (Блок 2)", desc: "Финальный интеллектуальный рывок. Закрытие дневных задач.", offset: 375, duration: 120, icon: "fa-solid fa-brain", done: false, category: "Работа" }
         ];
 
-        // Инициализация состояния приложения из localStorage или создание дефолтного
+        // Инициализация состояния приложения из localStorage
         let state = JSON.parse(localStorage.getItem('discipline_17_state')) || {
-            tasks: JSON.parse(JSON.stringify(chronologicalTasks)), // Копируем дефолтные задачи
+            tasks: JSON.parse(JSON.stringify(chronologicalTasks)),
             streak: 0,
             lastResetDate: "",
-            reflection: ""
+            reflection: "",
+            wakeUpTime: "06:00" // Время пробуждения по умолчанию
         };
 
-        // Проверяем целостность и количество задач в сохраненном стейте
+        // Защитная проверка целостности стейта
         if (!state.tasks || state.tasks.length !== chronologicalTasks.length) {
             state.tasks = JSON.parse(JSON.stringify(chronologicalTasks));
-            localStorage.setItem('discipline_17_state', JSON.stringify(state));
+            saveState();
+        }
+        if (!state.wakeUpTime) {
+            state.wakeUpTime = "06:00";
+            saveState();
         }
 
-        // Переменная для хранения ID текущей выбранной задачи для отображения советов
         let activeTaskId = 1;
-
-        // Инициализируем аудиоконтекст для сочного звука успеха
         let audioCtx = null;
+
+        // Вспомогательная функция для виброотдачи смартфона (Haptics)
+        function triggerVibration(pattern) {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                try {
+                    navigator.vibrate(pattern);
+                } catch (e) {
+                    console.warn("Вибрация не поддерживается или ограничена на устройстве", e);
+                }
+            }
+        }
+
+        // Синтез звуковых эффектов (Web Audio API)
         function playSuccessSound() {
             try {
                 if (!audioCtx) {
@@ -538,7 +574,6 @@
                 const now = audioCtx.currentTime;
                 osc.type = 'sine';
                 
-                // Красивый двойной гармоничный сигнал успеха
                 osc.frequency.setValueAtTime(392.00, now); // G4
                 osc.frequency.setValueAtTime(523.25, now + 0.08); // C5
                 osc.frequency.setValueAtTime(659.25, now + 0.16); // E5
@@ -549,10 +584,56 @@
                 osc.start(now);
                 osc.stop(now + 0.4);
             } catch(e) {
-                console.log("Audio Context не поддерживается или заблокирован браузером", e);
+                console.log("Аудио контекст не поддерживается", e);
             }
         }
 
+        // Математика времени: прибавление минут к временной метке ЧЧ:ММ
+        function adjustTime(baseTimeStr, offsetMinutes) {
+            let [hours, minutes] = baseTimeStr.split(':').map(Number);
+            if (isNaN(hours) || isNaN(minutes)) {
+                hours = 6; minutes = 0;
+            }
+            let totalMinutes = hours * 60 + minutes + offsetMinutes;
+            
+            // Защита от выхода за рамки 24 часов
+            if (totalMinutes < 0) totalMinutes += 1440;
+            let newHours = Math.floor(totalMinutes / 60) % 24;
+            let newMinutes = totalMinutes % 60;
+            
+            return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+        }
+
+        // Конвертация строкового ЧЧ:ММ во внутренние минуты от начала суток
+        function parseTimeToMinutes(timeStr) {
+            let clean = timeStr.split('-')[0].trim();
+            let [h, m] = clean.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return 0;
+            return h * 60 + m;
+        }
+
+        // Возврат вычисленного форматированного интервала для задачи
+        function getTaskFormattedTime(task, wakeUpTimeStr) {
+            let startTime = adjustTime(wakeUpTimeStr, task.offset);
+            if (task.duration > 0) {
+                let endTime = adjustTime(wakeUpTimeStr, task.offset + task.duration);
+                return `${startTime} - ${endTime}`;
+            }
+            return startTime;
+        }
+
+        // Изменение времени пробуждения и мгновенная перекалибровка всех задач
+        function updateWakeUpTime(newVal) {
+            if (!newVal) return;
+            state.wakeUpTime = newVal;
+            saveState();
+            renderUI();
+            updateAdvicePanel(activeTaskId);
+            triggerVibration(40); // Легкий тактильный клик
+            showToast(`Время подъема изменено на ${newVal}. Расписание пересчитано!`, "success");
+        }
+
+        // Спиннер уведомлений
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -587,33 +668,31 @@
             }, 4000);
         }
 
-        // Проверка времени и авто-сброс задач в 02:30 ночи
+        // Проверка даты и автосброс в 02:30 ночи
         function checkReset() {
             const now = new Date();
             const currentHour = now.getHours();
             const currentMinute = now.getMinutes();
             
-            // Если время < 02:30 ночи, то мы всё ещё в цикле вчерашнего дня.
             let logicalDay = new Date(now);
             if (currentHour < 2 || (currentHour === 2 && currentMinute < 30)) {
                 logicalDay.setDate(logicalDay.getDate() - 1);
             }
             const logicalDayString = logicalDay.toDateString();
             
-            // Если сохраненная дата сброса не совпадает с текущим логическим днем
             if (state.lastResetDate !== logicalDayString) {
-                // Был ли завершен прошлый день на 100%?
                 const allCompleted = state.tasks.every(task => task.done);
                 
                 if (allCompleted) {
                     state.streak += 1;
-                    showToast(`Mashallah! Ты выполнил все задачи на 100%! Серия дней продлена до ${state.streak}.`, 'success');
+                    triggerVibration([200, 100, 200]); // Тройной импульс победы!
+                    showToast(`Mashallah! Серия дней продлена до ${state.streak}. Твой стержень крепнет!`, 'success');
                 } else {
                     state.streak = 0;
-                    showToast('Новый день начался. Серия сброшена, так как вчера были невыполненные задачи.', 'alert');
+                    triggerVibration([300]); // Длинный грустный импульс
+                    showToast('Новый день начался. Прогресс обнулен, а серия сброшена, так как вчера были долги.', 'alert');
                 }
                 
-                // Сбрасываем задачи
                 state.tasks.forEach(task => task.done = false);
                 state.lastResetDate = logicalDayString;
                 
@@ -623,10 +702,11 @@
             }
         }
 
-        // Запрос подтверждения ручного сброса
+        // Ручной сброс прогресса
         function confirmReset() {
             const modalConfirm = confirm("Вы действительно хотите сбросить прогресс за сегодня? Серия дней будет прервана.");
             if (modalConfirm) {
+                triggerVibration([150, 100, 150]); // Двойной сильный тактильный сигнал
                 state.tasks.forEach(task => task.done = false);
                 state.streak = 0;
                 
@@ -666,7 +746,7 @@
             }, 1000);
         }
 
-        // Переключение состояния выполнения задачи
+        // Переключение состояния выполнения задачи с поддержкой вибрации
         function toggleTask(id) {
             const task = state.tasks.find(t => t.id === id);
             if (task) {
@@ -674,7 +754,18 @@
                 
                 if (task.done) {
                     playSuccessSound();
-                    showToast(`Выполнено: ${task.name}!`, "success");
+                    
+                    // Проверяем, завершены ли теперь все задачи
+                    const allCompletedNow = state.tasks.every(t => t.done);
+                    if (allCompletedNow) {
+                        triggerVibration([100, 50, 100, 50, 200]); // Сверхсильная победная вибрация!
+                        showToast(`ВЕЛИКОЛЕПНО! Все задачи закрыты! Достигнут Режим Берсерка! 🔥`, "success");
+                    } else {
+                        triggerVibration(80); // Мягкая одиночная тактильная отдача
+                        showToast(`Выполнено: ${task.name}!`, "success");
+                    }
+                } else {
+                    triggerVibration(40); // Легкий спад вибрации
                 }
                 
                 saveState();
@@ -683,12 +774,11 @@
             }
         }
 
-        // Выбор задачи для отображения советов
+        // Выбор задачи для показа медицинского инсайта
         function selectTaskForAdvice(id) {
             activeTaskId = id;
             updateAdvicePanel(id);
             
-            // Подсветка активной задачи в UI
             const cards = document.querySelectorAll('.task-card');
             cards.forEach(card => {
                 if (card.getAttribute('data-id') == id) {
@@ -701,9 +791,9 @@
             });
         }
 
-        // Смена совета (шаффл) внутри выбранной задачи
         function shuffleActiveAdvice() {
             updateAdvicePanel(activeTaskId);
+            triggerVibration(45);
             showToast("Совет обновлен", "info");
         }
 
@@ -719,13 +809,11 @@
             
             const tips = adviceDatabase[taskId];
             if (tips && tips.length > 0) {
-                // Находим главный выделенный совет
                 const criticalTip = tips.find(tip => tip.important);
                 if (criticalTip) {
                     document.getElementById('critical-advice-text').innerText = criticalTip.text;
                 }
                 
-                // Выбираем случайный совет для основного отображения
                 const randomIndex = Math.floor(Math.random() * tips.length);
                 const chosenTip = tips[randomIndex];
                 
@@ -755,11 +843,16 @@
 
             document.getElementById('edit-task-id').value = task.id;
             document.getElementById('edit-task-name').value = task.name;
-            document.getElementById('edit-task-time').value = task.time;
+            
+            // Выводим только стартовое время, высчитывая его из смещения
+            let currentFormatted = adjustTime(state.wakeUpTime, task.offset);
+            document.getElementById('edit-task-time').value = currentFormatted;
+            
             document.getElementById('edit-task-category').value = task.category || "";
 
             const modal = document.getElementById('edit-modal');
             modal.classList.remove('hidden');
+            triggerVibration(50);
         }
 
         function closeEditModal() {
@@ -767,27 +860,42 @@
             modal.classList.add('hidden');
         }
 
+        // Сохранение изменений в задаче с пересчетом относительного оффсета
         function saveTaskEdits() {
             const id = parseInt(document.getElementById('edit-task-id').value);
             const name = document.getElementById('edit-task-name').value.trim();
-            const time = document.getElementById('edit-task-time').value.trim();
+            const timeVal = document.getElementById('edit-task-time').value.trim();
             const category = document.getElementById('edit-task-category').value.trim();
 
-            if (!name || !time) {
+            if (!name || !timeVal) {
                 showToast("Название и Время не могут быть пустыми!", "alert");
+                triggerVibration([50, 50]);
                 return;
             }
 
             const task = state.tasks.find(t => t.id === id);
             if (task) {
                 task.name = name;
-                task.time = time;
                 task.category = category || "Осанка";
+                
+                // Пересчитываем смещение на основе указанного пользователем абсолютного времени
+                let targetMinutes = parseTimeToMinutes(timeVal);
+                let wakeMinutes = parseTimeToMinutes(state.wakeUpTime);
+                
+                // Оффсет относительно пробуждения
+                let newOffset = targetMinutes - wakeMinutes;
+                
+                // Если разница оффсетов выходит за границы полусуток, корректируем
+                if (newOffset < -720) newOffset += 1440;
+                if (newOffset > 720) newOffset -= 1440;
+                
+                task.offset = newOffset;
                 
                 saveState();
                 renderUI();
                 updateAdvicePanel(activeTaskId);
                 closeEditModal();
+                triggerVibration(60);
                 showToast("Задача успешно обновлена", "success");
             }
         }
@@ -807,8 +915,7 @@
             const offset = circumference - (percentage / 100) * circumference;
             circle.style.strokeDashoffset = offset;
             
-            // Настройка ранга
-            let rank = "Абсолютный хаос";
+            let rank = "Абсолютный хаос 💀";
             let rankClass = "text-rose-400 bg-rose-500/10 border-rose-500/20";
             
             if (percentage >= 100) {
@@ -831,19 +938,22 @@
             
             document.getElementById('streak-counter').innerText = `${state.streak} ${getDaysWord(state.streak)}`;
             
-            // Рендер хронологических задач
+            // Рендер динамического списка задач на основе текущего Wake-up Time
             const timelineContainer = document.getElementById('tasks-timeline-container');
             timelineContainer.innerHTML = state.tasks.map(task => {
                 const isSelected = task.id === activeTaskId;
                 const borderClass = isSelected ? 'border-indigo-500/70 bg-slate-900/80 shadow-neon-indigo' : 'border-slate-800/80 bg-slate-900/30';
                 const doneClass = task.done ? 'bg-gradient-to-r from-emerald-950/40 to-slate-900/40 border-emerald-500/30 shadow-neon-emerald' : borderClass;
                 
+                // Вычисляем время на основе смещения
+                const timeString = getTaskFormattedTime(task, state.wakeUpTime);
+                
                 return `
                     <div data-id="${task.id}" onclick="selectTaskForAdvice(${task.id})" class="task-card p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.01] hover:border-slate-700 cursor-pointer flex items-center justify-between gap-4 ${doneClass}">
                         <div class="flex items-center gap-3.5 flex-1 min-w-0">
                             <!-- Левая часть: Время и категория -->
-                            <div class="flex flex-col items-center justify-center min-w-[75px] py-1 px-2.5 rounded-xl bg-slate-950/80 border border-slate-850">
-                                <span class="text-[10px] text-slate-400 font-extrabold tracking-wide uppercase text-center">${task.time}</span>
+                            <div class="flex flex-col items-center justify-center min-w-[85px] py-1 px-2.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                                <span class="text-[10px] text-slate-400 font-extrabold tracking-wide uppercase text-center">${timeString}</span>
                                 <span class="text-[9px] text-indigo-400 mt-0.5 font-bold uppercase tracking-wider">${task.category}</span>
                             </div>
                             
@@ -879,7 +989,6 @@
             }).join('');
         }
 
-        // Помощник склонения
         function getDaysWord(num) {
             const remainder10 = num % 10;
             const remainder100 = num % 100;
@@ -889,7 +998,7 @@
             return 'дней';
         }
 
-        // Запуск системного времени и проверки сброса
+        // Запуск трекера и детектора сброса
         function startTimeTracking() {
             setInterval(() => {
                 const now = new Date();
@@ -905,38 +1014,38 @@
             }, 1000);
         }
 
-        // Логика кнопки установки PWA (Web APK)
+        // Установка PWA (Web APK)
         let deferredPrompt;
         const installBtn = document.getElementById('pwa-install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Предотвращаем автоматический показ стандартного окна
             e.preventDefault();
             deferredPrompt = e;
-            // Показываем нашу кнопку
             installBtn.classList.remove('hidden');
         });
 
         installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) return;
-            // Показываем диалог установки
             deferredPrompt.prompt();
-            // Ждем ответа от пользователя
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Результат установки: ${outcome}`);
+            console.log(`PWA Outcome: ${outcome}`);
             deferredPrompt = null;
             installBtn.classList.add('hidden');
         });
 
         window.addEventListener('appinstalled', () => {
             installBtn.classList.add('hidden');
-            showToast("Приложение успешно установлено на ваш экран!", "success");
+            triggerVibration([100, 100, 100]);
+            showToast("Приложение успешно установлено на главный экран смартфона!", "success");
         });
 
-        // Инициализация
+        // Старт системы
         window.onload = function() {
             document.getElementById('reflection-textarea').value = state.reflection || "";
             document.getElementById('char-count').innerText = `${(state.reflection || "").length} символов`;
+            
+            // Задаем сохраненное время в селекторе пробуждения
+            document.getElementById('wake-up-time').value = state.wakeUpTime;
             
             startTimeTracking();
             checkReset();
@@ -945,4 +1054,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
